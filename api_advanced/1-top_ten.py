@@ -6,14 +6,15 @@ import requests
 
 def top_ten(subreddit):
     """Print the titles of the first 10 hot posts for a given subreddit.
+
     If the subreddit is invalid, print None.
     """
     if not subreddit or not isinstance(subreddit, str):
-        print(None)
+        print("None")
         return
 
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-    headers = {'User-Agent': 'My-User-Agent'}
+    headers = {'User-Agent': 'Leon Nsamba alu project'}
     params = {'limit': 10}
 
     try:
@@ -29,6 +30,6 @@ def top_ten(subreddit):
                 if title:
                     print(title)
         else:
-            print(None)
+            print("None")
     except Exception:
-        print(None)
+        print("None")
