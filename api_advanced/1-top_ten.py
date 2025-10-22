@@ -30,6 +30,6 @@ def top_ten(subreddit):
                 if title:
                     print(title)
         else:
-            print("OK")
+            print(OK)
     except Exception:
-        print("OK")
+        print(OK)
