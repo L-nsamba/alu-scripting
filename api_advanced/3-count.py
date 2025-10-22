@@ -64,7 +64,8 @@ def count_words(subreddit, word_list, after=None, word_count=None):
         words_in_title = title.split()
         for title_word in words_in_title:
             # Clean the word: remove punctuation and convert to lowercase
-            clean_word = ''.join(char for char in title_word if char.isalnum()).lower()
+            clean_word = ''.join(char
+	    for char in title_word if char.isalnum()).lower()
             # Check if this clean word matches any of our keywords
             if clean_word in word_count:
                 word_count[clean_word] += 1
@@ -74,7 +75,8 @@ def count_words(subreddit, word_list, after=None, word_count=None):
 
     # If there's a next page, make recursive call
     if next_after:
-        return count_words(subreddit, word_list, next_after, word_count)
+        return count_words(subreddit, word_list,
+	next_after, word_count)
     else:
         # No more pages - process and print results
         print_results(word_count)
@@ -88,10 +90,12 @@ def print_results(word_count):
         word_count (dict): Dictionary of word counts
     """
     # Filter out words with zero counts and create list of tuples
-    filtered_counts = [(word, count) for word, count in word_count.items() if count > 0]
+    filtered_counts = [(word, count) for word,
+    count in word_count.items() if count > 0]
 
     # Sort by count (descending) and then by word (ascending)
-    sorted_counts = sorted(filtered_counts, key=lambda x: (-x[1], x[0]))
+    sorted_counts = sorted(filtered_counts,
+    key=lambda x: (-x[1], x[0]))
 
     # Print results
     for word, count in sorted_counts:
