@@ -1,26 +1,39 @@
 #!/usr/bin/python3
+"""
+Module to query Reddit API for subreddit subscriber count
+"""
 import requests
-import string
+
 
 def number_of_subscribers(subreddit):
     """
-    Returns the number of subscribers for a given subreddit.
-    If the subreddit is invalid, returns 0.
+    Queries the Reddit API and returns the number of subscribers
+    for a given subreddit.
+
+    Args:
+        subreddit (str): The name of the subreddit
+
+    Returns:
+        int: Number of subscribers, or 0 if subreddit is invalid
     """
-    url = f"https://www.reddit.com/r/{subreddit}/about.json"
-    headers = {"User-Agent": "Python:subscribers:v1.0 (by /u/yourusername)"}
-    
-    try:
-        response = requests.get(url, headers=headers, allow_redirects=False)
-        # Check if the subreddit exists (status code 200)
-        if response.status_code == 200:
-            data = response.json()
-            return data["data"]["subscribers"]
-        else:
-            return 0
-    except Exception:
+    if not subreddit or not isinstance(subreddit, str):
         return 0
 
-# Example usage:
-print(number_of_subscribers("python"))  # Should return the subscriber count
-print(number_of_subscribers("nonexistentsubreddit12345"))  # Should return 0
+    url = f"https://www.reddit.com/r/{subreddit}/about.json"
+    headers = {
+        'User-Agent': 'python:subreddit.subscriber.counter:v1.0.0 (by /u/youruser)'
+    }
+
+    try:
+        response = requests.get(url, headers=headers, allow_redirects=False)
+        
+        # Check if the request was successful and not redirected
+        if response.status_code == 200:
+            data = response.json()
+            # Extract subscriber count from the response
+            subscribers = data.get('data', {}).get('subscribers', 0)
+            return subscribers
+        else:
+            return 0
+    except (requests.RequestException, ValueError, KeyError):
+        return 0
