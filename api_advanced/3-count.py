@@ -1,102 +1,39 @@
 #!/usr/bin/python3
 """
-Recursive function that queries the Reddit API,
-parses the title of all hot
-articles, and prints a sorted count of given keywords
+Module that contains a recursive function to fetch all hot article titles
+from a given subreddit using the Reddit API.
 """
 import requests
 
 
-def count_words(subreddit, word_list, after=None, word_count=None):
-    """
-    Recursively counts keywords in hot article titles from a subreddit
+def recurse(subreddit, hot_list=None, after=None):
+    """Recursively fetches hot article titles from a subreddit."""
+    if hot_list is None:
+        hot_list = []
 
-    Args:
-        subreddit (str): The subreddit to search
-        word_list (list): List of keywords to count
-        after (str): Pagination token for next page
-        word_count (dict): Dictionary to accumulate word counts
-
-    Returns:
-        None: Results are printed to stdout
-    """
-    # Initialize word_count dictionary on first call
-    if word_count is None:
-        word_count = {}
-        # Convert word_list to lowercase and initialize counts
-        for word in word_list:
-            word_lower = word.lower()
-            word_count[word_lower] = word_count.get(word_lower, 0)
-
-    # Base URL for Reddit API
-    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-
-    # Set headers
     headers = {
-        'User-Agent': 'python:reddit_keyword_counter:v1.0'
+        'User-Agent': 'python:recurse_hot:v1.0 '
+                      '(by Leon-Nsamba)'
     }
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    params = {'after': after, 'limit': 100}
 
-    # Add pagination parameter if we have an 'after' token
-    params = {'limit': 100}
-    if after:
-        params['after'] = after
-
-    # Make the API request - don't follow redirects
     response = requests.get(
-        url,
-        headers=headers,
-        params=params,
-        allow_redirects=False
+        url, headers=headers, params=params, allow_redirects=False
     )
 
-    # If subreddit is invalid, return without printing
     if response.status_code != 200:
-        return
+        return None
 
-    # Parse the JSON response
-    data = response.json()
-    posts = data['data']['children']
+    data = response.json().get('data')
+    if not data:
+        return None
 
-    # Process titles from current page
-    for post in posts:
-        title = post['data']['title']
-        # Split title into words and count matches
-        words_in_title = title.split()
-        for title_word in words_in_title:
-            # Clean the word: remove punctuation and convert to lowercase
-            clean_word = ''.join(char
-	    for char in title_word if char.isalnum()).lower()
-            # Check if this clean word matches any of our keywords
-            if clean_word in word_count:
-                word_count[clean_word] += 1
+    for post in data.get('children', []):
+        hot_list.append(post['data']['title'])
 
-    # Get the pagination token for next page
-    next_after = data['data']['after']
+    after = data.get('after')
+    if after:
+        return recurse(subreddit, hot_list, after)
 
-    # If there's a next page, make recursive call
-    if next_after:
-        return count_words(subreddit, word_list,
-	next_after, word_count)
-    else:
-        # No more pages - process and print results
-        print_results(word_count)
-
-
-def print_results(word_count):
-    """
-    Print the word counts in sorted order
-
-    Args:
-        word_count (dict): Dictionary of word counts
-    """
-    # Filter out words with zero counts and create list of tuples
-    filtered_counts = [(word, count) for word,
-    count in word_count.items() if count > 0]
-
-    # Sort by count (descending) and then by word (ascending)
-    sorted_counts = sorted(filtered_counts,
-    key=lambda x: (-x[1], x[0]))
-
-    # Print results
-    for word, count in sorted_counts:
-        print("{}: {}".format(word, count))
+    return hot_list
