@@ -1,3 +1,4 @@
+
 #!/usr/bin/python3
 """Script that fetch 10 hot post for a given subreddit."""
 import requests
@@ -21,4 +22,4 @@ def top_ten(subreddit):
                 .get('title')
             )
     else:
-        print('OK')
+        print(None)
