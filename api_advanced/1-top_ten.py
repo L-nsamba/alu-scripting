@@ -16,22 +16,18 @@ def top_ten(subreddit):
     
     response = requests.get(
         url,
-        headers=headers, 
+        headers=headers,
         params=params,
         allow_redirects=False
     )
     
-    # Check if response is valid and not a redirect
     if response.status_code == 200:
-        try:
-            data = response.json()
-            posts = data['data']['children']
-            if posts:
-                for post in posts[:10]:
-                    print(post['data']['title'])
-            else:
-                print(None)
-        except (ValueError, KeyError):
-            print(None)
+        data = response.json()
+        posts = data['data']['children']
+        if posts:
+            for post in posts[:10]:
+                print(post['data']['title'])
+        else:
+            print("None")
     else:
-        print(None)
+        print("None")
