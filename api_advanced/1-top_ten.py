@@ -10,7 +10,7 @@ def top_ten(subreddit):
     If the subreddit is invalid, print None.
     """
     if not subreddit or not isinstance(subreddit, str):
-        print("Ok")
+        print("None")
         return
 
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
@@ -30,6 +30,6 @@ def top_ten(subreddit):
                 if title:
                     print(title)
         else:
-            print("Ok")
+            print("OK")
     except Exception:
-        print("Ok")
+        print("OK")
