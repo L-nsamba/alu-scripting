@@ -23,7 +23,7 @@ def recurse(subreddit, hot_list=[], after=None):
 
     # Set headers to avoid redirects and identify our bot
     headers = {
-        'User-Agent': 'python:reddit_recursive_scraper:v1.0 (by /u/your_username)'
+        'User-Agent': 'Leon-nsamba-alu-project'
     }
 
     # Add pagination parameter if we have an 'after' token
