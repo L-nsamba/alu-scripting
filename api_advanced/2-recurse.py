@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""
+Module that contains a recursive function to fetch all hot article titles
+from a given subreddit using the Reddit API.
+"""
 import requests
 
 def recurse(subreddit, hot_list=None, after=None):
@@ -6,14 +10,12 @@ def recurse(subreddit, hot_list=None, after=None):
     if hot_list is None:
         hot_list = []
 
-    # Set custom User-Agent to avoid 429 Too Many Requests
-    headers = {'User-Agent': 'Leon Nsamba alu reddit project'}
+    headers = {'User-Agent': 'leon_nsamba_alu_reddit_project'}
     url = f"https://www.reddit.com/r/{subreddit}/hot.json"
     params = {'after': after, 'limit': 100}
 
     response = requests.get(url, headers=headers, params=params, allow_redirects=False)
 
-    # Handle invalid subreddit
     if response.status_code != 200:
         return None
 
@@ -21,11 +23,9 @@ def recurse(subreddit, hot_list=None, after=None):
     if not data:
         return None
 
-    # Extract titles and append to the list
     for post in data.get('children', []):
         hot_list.append(post['data']['title'])
 
-    # Check if there is a next page
     after = data.get('after')
     if after:
         return recurse(subreddit, hot_list, after)
