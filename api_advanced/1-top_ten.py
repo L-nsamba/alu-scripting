@@ -17,7 +17,6 @@ def top_ten(subreddit):
         None: Prints the titles or None if the subreddit is invalid.
     """
     if subreddit is None or not isinstance(subreddit, str):
-        print(None)
         return
 
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
