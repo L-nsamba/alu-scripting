@@ -30,15 +30,11 @@ def top_ten(subreddit):
 
     try:
         response = requests.get(url, headers=headers, params=params,
-                                allow_redirects=False)
+                                allow_redirects=False, timeout=5)
 
         if response.status_code == 200:
             data = response.json()
             posts = data.get('data', {}).get('children', [])
-
-            if not posts:
-                print(None)
-                return
 
             for post in posts:
                 title = post.get('data', {}).get('title')
